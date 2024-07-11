@@ -17,7 +17,7 @@ def get_gemini_response(prompt):
     return response.parts[0].text
 
 # Streamlit UI
-st.title("Generate Test Cases for Login Functionality")
+st.title("Generate Test Cases")
 
 # Input for user requirements
 requirement = st.text_area("Enter the requirements for generating test cases:")
