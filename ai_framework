@@ -22,7 +22,6 @@ st.title("Generate Test Cases")
 # Input for user requirements
 requirement = st.text_area("Enter the requirements for generating test cases:")
 
-
 # Generate test cases based on user input
 if st.button("Generate Test Cases"):
     test_cases = get_gemini_response(requirement)
@@ -31,13 +30,20 @@ if st.button("Generate Test Cases"):
     st.subheader("Generated Test Cases:")
     st.write(test_cases)
 
+    # Convert to DataFrame with each test case in a separate row
+    test_cases_list = [case.strip() for case in test_cases.split('\n') if case.strip()]
+    df = pd.DataFrame({"Test Cases": test_cases_list})
+
+    # Display the DataFrame
+    st.subheader("Generated Test Cases (Formatted):")
+    st.write(df)
+
     # Convert to Excel and provide download link
-    df = pd.DataFrame({"Test Cases": [test_cases]})
     st.subheader("Download Excel")
     st.write("Download your generated test cases as Excel:")
     st.write(df)
 
-    csv = df.to_csv(index=False)
-    b64 = base64.b64encode(csv.encode()).decode()
-    href = f'<a href="data:file/csv;base64,{b64}" download="generated_test_cases.csv">Download CSV File</a>'
+    excel_data = df.to_excel(index=False, header=True)
+    b64 = base64.b64encode(excel_data).decode()
+    href = f'<a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" download="generated_test_cases.xlsx">Download Excel File</a>'
     st.markdown(href, unsafe_allow_html=True)
