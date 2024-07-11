@@ -1,3 +1,2 @@
 streamlit
-transformers
-huggingface_hub
+google-generative-ai
