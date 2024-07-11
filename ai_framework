@@ -3,6 +3,7 @@ import google.generativeai as genai
 import pandas as pd
 import base64
 from io import BytesIO
+import os
 
 # Configure API key
 api_key = "AIzaSyAxz3eWwhOlP-g3Cws-O153RGnxoidGv_0"
