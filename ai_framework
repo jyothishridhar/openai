@@ -1,0 +1,31 @@
+import streamlit as st
+import google.generativeai as genai
+
+# Configure API key
+api_key = "AIzaSyAxz3eWwhOlP-g3Cws-O153RGnxoidGv_0"
+genai.configure(api_key=api_key)
+
+# Define the requirement
+requirement = """
+Generate test cases for login functionality for the below conditions:
+1. Don't use email ID.
+2. Username should be unique.
+3. User password should have at least two numbers and three alphabets.
+"""
+
+# Function to load Google Gemini Pro and get response
+def get_gemini_response(prompt):
+    model = genai.GenerativeModel('gemini-pro')
+    response = model.generate_content([prompt])
+    if not response or not response.parts:
+        st.error("No valid response returned. The content might have been blocked.")
+        return "No valid response returned. Please check the input requirements."
+    return response.parts[0].text
+
+# Generate test cases based on the requirement
+test_cases = get_gemini_response(requirement)
+
+# Display the test cases in the Streamlit app
+st.write("Generated Test Cases:")
+st.write(test_cases)
+
