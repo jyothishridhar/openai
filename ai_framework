@@ -1,17 +1,11 @@
 import streamlit as st
 import google.generativeai as genai
+import pandas as pd
+import base64
 
 # Configure API key
 api_key = "AIzaSyAxz3eWwhOlP-g3Cws-O153RGnxoidGv_0"
 genai.configure(api_key=api_key)
-
-# Define the requirement
-requirement = """
-Generate test cases for login functionality for the below conditions:
-1. Don't use email ID.
-2. Username should be unique.
-3. User password should have at least two numbers and three alphabets.
-"""
 
 # Function to load Google Gemini Pro and get response
 def get_gemini_response(prompt):
@@ -22,10 +16,31 @@ def get_gemini_response(prompt):
         return "No valid response returned. Please check the input requirements."
     return response.parts[0].text
 
-# Generate test cases based on the requirement
-test_cases = get_gemini_response(requirement)
+# Streamlit UI
+st.title("Generate Test Cases for Login Functionality")
 
-# Display the test cases in the Streamlit app
-st.write("Generated Test Cases:")
-st.write(test_cases)
+# Input for user requirements
+requirement = st.text_area("Enter the requirements for generating test cases:", """
+1. Don't use email ID.
+2. Username should be unique.
+3. User password should have at least two numbers and three alphabets.
+""")
 
+# Generate test cases based on user input
+if st.button("Generate Test Cases"):
+    test_cases = get_gemini_response(requirement)
+
+    # Display the generated test cases
+    st.subheader("Generated Test Cases:")
+    st.write(test_cases)
+
+    # Convert to Excel and provide download link
+    df = pd.DataFrame({"Test Cases": [test_cases]})
+    st.subheader("Download Excel")
+    st.write("Download your generated test cases as Excel:")
+    st.write(df)
+
+    csv = df.to_csv(index=False)
+    b64 = base64.b64encode(csv.encode()).decode()
+    href = f'<a href="data:file/csv;base64,{b64}" download="generated_test_cases.csv">Download CSV File</a>'
+    st.markdown(href, unsafe_allow_html=True)
